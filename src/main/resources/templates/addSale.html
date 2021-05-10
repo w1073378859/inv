@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="'https'+':'+'//unpkg.com/element-ui/lib/theme-chalk/index.css'">
+    <script th:src="@{/vue/vue.js}"></script>
+    <script th:src="@{/vue/vue-axios.js}"></script>
+</head>
+<body>
+    <div id="app">
+
+        <el-form ref="sale" :form="sale" label-width="200px">
+            <el-form-item>
+                <el-input v-show="false" ref="id" th:value="${session.USER.id}"></el-input>
+            </el-form-item>
+            <el-form-item label="选择商品:">
+                <el-select v-model="sale.productid" name="productid" placeholder="-请选择商品">
+                    <el-option
+                            v-for="item in options"
+                            :key="item.id"
+                            :label="item.productname"
+                            :value="item.id">
+                    </el-option>
+                </el-select>
+
+            </el-form-item>
+            <el-form-item label="销售单价">
+                <el-input v-model="sale.price"></el-input>
+            </el-form-item>
+            <el-form-item label="销售数量">
+                <el-input v-model="sale.quantity"></el-input>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" @click="onSubmit()">立即创建</el-button>
+                <el-button>取消</el-button>
+            </el-form-item>
+        </el-form>
+    </div>
+</body>
+<script th:src="'https'+':'+'//unpkg.com/element-ui/lib/index.js'"></script>
+<script>
+    var vm = new Vue({
+        el:"#app",
+        data(){
+            return{
+                sale:{
+                    productid:'',
+                    price:0,
+                    quantity:0,
+                    userid:0
+                },
+                options:[]
+            }
+        },
+        methods:{
+            getProList(){
+                axios.get('/getProList')
+                .then(rs =>{
+                    this.options = rs.data;
+                })
+                .catch(er =>{
+                    alert("获取商品失败！");
+                })
+            },
+            onSubmit(){
+                this.sale.userid = this.$refs.id.value;
+                console.log(this.sale.userid);
+                axios({
+                    url:'/addSaleSave',
+                    method:"post",
+                    params:{
+                    productid: this.sale.productid,
+                    price: this.sale.price,
+                    quantity: this.sale.quantity,
+                    userid:this.sale.userid,
+                    totalprice:this.sale.price*this.sale.quantity
+                }
+                })
+                .then(rs =>{
+                    alert("销售商品成功!");
+                    top.location.href="/main";
+                })
+                .catch(er=>{
+                    alert("销售商品失败！");
+                })
+            }
+        },
+        created(){
+                this.getProList();
+        },
+        mounted(){
+
+        }
+    })
+</script>
+</html>

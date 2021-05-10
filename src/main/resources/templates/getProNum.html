@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="'https'+':'+'//unpkg.com/element-ui/lib/theme-chalk/index.css'">
+    <script th:src="@{/vue/vue.js}"></script>
+    <script th:src="@{/vue/vue-axios.js}"></script>
+</head>
+<body>
+    <div id="app">
+        <el-form action="">
+            <template>
+                <el-form-item label="获取商品数量：">
+                    <el-select v-model="id" placeholder="请选择">
+                        <el-option
+                                v-for="item in options"
+                                :key="item.id"
+                                :label="item.productname"
+                                :value="item.id">
+                        </el-option>
+                    </el-select>
+                    <el-button type="primary" @click="submitForm()">查询</el-button>
+                </el-form-item>
+                <span>该库存是: <el-link>{{quantity}}</el-link></span>
+            </template>
+        </el-form>
+    </div>
+</body>
+<script th:src="'https'+':'+'//unpkg.com/element-ui/lib/index.js'"></script>
+<script>
+    var vue = new Vue({
+        el:"#app",
+        data(){
+            return{
+                quantity:0,
+                productname:'',
+                options:[],
+                id:''
+            }
+        },
+        methods:{
+            getProList(){
+                axios.get('/getProList')
+                    .then(rs =>{
+                        this.options = rs.data;
+                    })
+                    .catch(er =>{
+                        alert("获取商品失败！");
+                    })
+            },
+            submitForm(){
+                axios.get('/getPNums',{params:{id:this.id}})
+                    .then(rs =>{
+                        this.quantity = rs.data.quantity;
+                    })
+            }
+        },
+        created(){
+            this.getProList();
+        }
+    })
+</script>
+</html>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.inv.mapper.SaleMapper">
+  <insert id="addSale" parameterType="cn.inv.pojo.Sale">
+    insert into sale
+     <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="price != null">
+        price,
+      </if>
+      <if test="quantity != null">
+        quantity,
+      </if>
+      <if test="totalprice != null">
+        totalPrice,
+      </if>
+      <if test="saledate != null">
+        saleDate,
+      </if>
+      <if test="userid != null">
+        userId,
+      </if>
+      <if test="productid != null">
+        productId,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="price != null">
+        #{price,jdbcType=FLOAT},
+      </if>
+      <if test="quantity != null">
+        #{quantity,jdbcType=INTEGER},
+      </if>
+      <if test="totalprice != null">
+        #{totalprice,jdbcType=FLOAT},
+      </if>
+      <if test="saledate != null">
+        #{saledate,jdbcType=DATE},
+      </if>
+      <if test="userid != null">
+        #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="productid != null">
+        #{productid,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <select id="getSalProList" resultType="map">
+
+    SELECT s.`id`,s.`price`,s.`quantity`,s.`totalPrice`,s.`saleDate`,p.`productName`,u.`realName` FROM sale s
+        INNER JOIN product p ON p.`id` = s.`productId`
+        INNER JOIN users u ON u.`id` = s.`userId`
+        <if test="num==0">
+        ORDER BY saleDate DESC
+        </if>
+        <if test="num==1">
+        ORDER BY totalPrice DESC
+        </if>
+    </select>
+</mapper>

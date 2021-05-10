@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+    <link rel="stylesheet" th:href="'https'+':'+'//unpkg.com/element-ui/lib/theme-chalk/index.css'">
+    <script th:src="@{/vue/vue.js}"></script>
+    <script th:src="@{/vue/vue-axios.js}"></script>
+</head>
+<body>
+    <div id="app">
+        <el-form ref="users" :model="users" method="post" label-width="80px">
+            <table>
+                <tr>
+                    <th>
+                        <el-form-item label="用户名">
+                            <el-input v-model="users.username" placeholder="请输入内容"></el-input>
+                        </el-form-item>
+                    </th>
+                    <th></th>
+                </tr>
+                <tr>
+                    <th>
+                        <el-form-item label="密码">
+                            <el-input placeholder="请输入密码" v-model="users.password" show-password></el-input>
+                        </el-form-item>
+                    </th>
+                    <th></th>
+                </tr>
+                <tr>
+                    <th colspan="2">
+                        <el-button type="primary" @click="submitForm()">登录</el-button>
+                        <el-button @click="resetForm('users')">重置</el-button>
+                    </th>
+                </tr>
+            </table>
+        </el-form>
+    </div>
+</body>
+<script th:src="'https'+':'+'//unpkg.com/element-ui/lib/index.js'"></script>
+<script>
+    var vue = new Vue({
+        el:"#app",
+        data() {
+            return {
+                users:{
+                    username:'',
+                    password:''
+                }
+            }
+        },
+        methods:{
+            submitForm() {
+                       axios({
+                           url: '/doLogin',
+                           method: "post",
+                           params: {
+                               username: this.users.username,
+                               password: this.users.password
+                           }}).then(rs =>{
+                                alert("登录成功!");
+                                window.location.href="/main";
+                       })
+                        .catch(er=>{
+                            alert("登录失败!");
+                        })
+
+
+            },
+            resetForm(users) {
+                this.$refs[users].resetFields();
+            }
+        }
+
+    })
+</script>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="'https'+':'+'//unpkg.com/element-ui/lib/theme-chalk/index.css'">
+    <script th:src="@{/vue/vue.js}"></script>
+    <script th:src="@{/vue/vue-axios.js}"></script>
+    <script th:src="'https'+':'+'//unpkg.com/element-ui/lib/index.js'"></script>
+    <style>
+        iframe{
+            display: inline;
+        }
+        li{
+            list-style: none;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <template>
+        <el-container>
+            <el-header>
+                欢迎，<span th:text="${session.USER.realname}"></span>,<a href="quit">退出</a>
+            </el-header>
+        </el-container>
+
+        <el-container>
+            <el-aside>
+                <el-tabs :tab-position="tabPosition" style="height: 200px;" v-model="activeName">
+                    <el-tab-pane label="主页" name="0"></el-tab-pane>
+                    <el-tab-pane label="销售"  name="1"></el-tab-pane>
+                    <el-tab-pane label="销售信息查询" name="2"></el-tab-pane>
+                    <el-tab-pane label="查看库存" name="3"></el-tab-pane>
+
+                </el-tabs>
+            </el-aside>
+            <el-main id="mainMain">
+                <iframe id="content" name="content" v-bind:src="iframeUrl" frameBorder="0" width="100%" scrolling="no" height="900"></iframe>
+            </el-main>
+        </el-container>
+    </template>
+
+
+</div>
+
+
+<script>
+var vue =new Vue({
+    el:"#app",
+    data(){
+        return{
+            iframeUrl:"/welcome",
+            tabPosition: 'left',
+            activeName:'0'
+        }
+    },
+    methods: {
+
+    },
+    watch:{
+        activeName(){
+            if(this.activeName==0){
+                this.iframeUrl='/welcome';
+            }else
+            if(this.activeName==1){
+                this.iframeUrl = '/addSale';
+
+            }else if(this.activeName==2){
+                this.iframeUrl = '/list';
+            }else if(this.activeName==3){
+                this.iframeUrl = '/getProNum';
+            }
+        }
+    }
+})
+</script>
+</body>
+</html>
